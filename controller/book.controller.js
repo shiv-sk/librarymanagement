@@ -15,7 +15,7 @@ exports.registerBook = asyncHandler(async (req,res)=>{
     }
     const existedbook = await Book.findOne({$or:[{bookauthor},{bookname}]})
     if(existedbook){
-        throw new ApiError(400,"alrwady book is existed.")
+        throw new ApiError(400,"already book is existed.")
     }
    const book = await Book.create({
         bookname:bookname.toLowerCase(),

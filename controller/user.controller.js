@@ -3,6 +3,17 @@ const ApiResponse = require("../utils/responsehandler.utils");
 const ApiError = require("../utils/errorhandler.utils");
 const User = require("../model/user.model");
 
+//generating access token
+const generatingAccessToken = async(userId)=>{
+    try {
+        const user = await User.findById(userId)
+        const AccessToken = user.generateAccessToken()
+        return {AccessToken}
+    } catch (error) {
+        throw new ApiError(500,"something went wrong while generating access token")
+    }
+} 
+
 exports.registerUser = asyncHandler(async (req,res)=>{
     //get userdetails
    //check for empty fields
@@ -78,4 +89,42 @@ exports.deleteUser = asyncHandler(async (req,res)=>{
     res.status(200).json(
         new ApiResponse(204,"","user is deletd successfully")
     )
+})
+
+//login user
+//1.take a data from req.body
+//2.username or email
+//3.check if user exist or not
+//4.password check
+//5.generate access token
+//6.send cookies
+
+exports.login = asyncHandler(async (req,res)=>{
+    const {username,email,password} = req.body
+
+    if(!(username || email)){
+        throw new ApiError(400 , "user name or email is required")
+    }
+    const user = await User.findOne({$or:[{email} , {username}]})
+    if(!user){
+        throw new ApiError(404,"user does not exist")
+    }
+    const isvalidpassword = await user.ispasswordcorrect(password)
+
+    if(!isvalidpassword){
+        throw new ApiError(400 , "password is not vaid")
+    }
+    const {AccessToken} = await generatingAccessToken(user._id)
+
+    // res.status(200).json(
+    //     new ApiResponse(200 , user,"logedin successfully")
+    // )
+    res.status(200).json({
+        status:"success",
+        data:{
+            AccessToken
+        },
+        message:"user loged in succesfully"
+    })
+
 })
