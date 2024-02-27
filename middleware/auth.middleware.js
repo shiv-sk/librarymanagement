@@ -1,17 +1,19 @@
-const asyncHandler = require("../utils/asyncHandler");
-const ApiError = require("../utils/errorHandler");
+const asyncHandler = require("../utils/asynchandler.utils");
+const ApiResponse = require("../utils/responsehandler.utils");
+const ApiError = require("../utils/errorhandler.utils");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
+const User = require("../model/user.model");
 
 exports.verifyJWT = asyncHandler(async(req,res,next) =>{
     try {
-        const token = req.cookies?.accessToken || req.headers("Authorization")?.replace("Bearer " , "")
+        const token = req.cookies?.AccessToken
+        console.log(token);
         if(!token){
             throw new ApiError(401,"unauthorized request")
         }
         const decodeToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
     
-        const user = await User.findById(decodeToken?._id).select("-password -refreshtoken")
+        const user = await User.findById(decodeToken?.id).select("-password")
     
         if(!user){
             throw new ApiError(401,"invalid access token")
@@ -19,7 +21,7 @@ exports.verifyJWT = asyncHandler(async(req,res,next) =>{
         req.user = user;
         next()
     } catch (error) {
-        new ApiError(401 , "invalid access token")
+        next(error);
     }
 })
 // module.exports = verifyJWT
@@ -27,8 +29,9 @@ exports.verifyJWT = asyncHandler(async(req,res,next) =>{
 exports.restrictUser = (role) =>{
     return (req,res,next) =>{
         if(req.user.role !== role){
-            new ApiError (403,"you are not allowed")
+            next(new ApiError (403,"you are not allowed"));
         }
+        console.log(req.user.role);
         next();
     }
 }
