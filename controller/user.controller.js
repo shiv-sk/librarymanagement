@@ -20,7 +20,7 @@ exports.registerUser = asyncHandler(async (req,res)=>{
    //check if user is already exists
    //then create user
    //remove some fileds from the response
-   const {username,fullname,phoneNumber,email,password} = req.body
+   const {username,fullname,phoneNumber,email,password,role} = req.body
    if([username,fullname,phoneNumber,email,password].some((field)=>{
     field && field.trim() === "";
    })){
@@ -36,7 +36,8 @@ exports.registerUser = asyncHandler(async (req,res)=>{
     email,
     fullname:fullname.toLowerCase(),
     password,
-    phoneNumber
+    phoneNumber,
+    role
    })
 
    const createduser = await User.findById(user._id).select("-password")
@@ -119,6 +120,7 @@ exports.login = asyncHandler(async (req,res)=>{
     // res.status(200).json(
     //     new ApiResponse(200 , user,"logedin successfully")
     // )
+    /*
     res.status(200).json({
         status:"success",
         data:{
@@ -126,5 +128,27 @@ exports.login = asyncHandler(async (req,res)=>{
         },
         message:"user loged in succesfully"
     })
+    */
+    const options = {
+        httpOnly:true,
+        secure:true
+    }
+    
+    return res.status(200).cookie("AccessToken" , AccessToken , options).
+    json(
+        new ApiResponse(200,{user,AccessToken}, "user loged in succesfully")
+    )
 
 })
+
+/*
+const options = {
+    httpOnly:true,
+    secure:true
+}
+
+return res.status(200).cookie("AccessToken" , AccessToken , options).
+json(
+    new ApiResponse(200,{user:logedInUser,AccessToken}, "user loged in succesfully")
+)
+*/

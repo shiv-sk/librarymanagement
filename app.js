@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express()
+const cookieparser = require("cookie-parser");
 const Dbconnection = require("./db/connectio.db");
 const UserRouter = require("./routes/user.routes");
 const BookRouter = require("./routes/book.routes");
@@ -8,6 +9,7 @@ const dotenv = require("dotenv");
 dotenv.config({path:"./.env"})
 
 app.use(express.json());
+app.use(cookieparser());
 
 Dbconnection().then(()=>{
     app.listen(process.env.PORT || 3000);
