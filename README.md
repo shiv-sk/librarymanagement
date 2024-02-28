@@ -41,3 +41,8 @@ the whole project is divided into three main models
 app.use("/api/v1/UserRouter" , UserRouter);
 app.use("/api/v1/BookRouter" , BookRouter);
 app.use("/api/v1/TransactionRouter" , TransactionRouter);
+
+
+Model Diagram
+![image](https://github.com/shiv-sk/librarymanagement/assets/155430597/83f32568-8b22-4d84-b8b0-b3de454302ee)
+
