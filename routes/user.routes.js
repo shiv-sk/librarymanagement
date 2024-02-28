@@ -8,10 +8,10 @@ const {verifyJWT , restrictUser} = require("../middleware/auth.middleware");
 
 Router.route("/userregister").post(Usercontroller.registerUser);
 Router.route("/login").post(Usercontroller.login);
-Router.route("/getalluser").get(Usercontroller.getAllUser);
-Router.route("/user/:id").get(Usercontroller.getUser)
-
 Router.route("/user/:id").patch(Usercontroller.updateUser)
+
+Router.route("/getalluser").get(verifyJWT , restrictUser("admin"), Usercontroller.getAllUser);
+Router.route("/user/:id").get(verifyJWT , restrictUser("admin"), Usercontroller.getUser)
 Router.route("/user/:id").delete(verifyJWT , restrictUser("admin"), Usercontroller.deleteUser);
 
 module.exports = Router
