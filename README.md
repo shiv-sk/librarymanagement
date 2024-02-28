@@ -14,7 +14,7 @@ Admin can perform
 
 # Technologies used
 Node, Express, Mongodb, Mongoose
-For testing endpoints Postman is used Cookie-parser is used for sending accessToken to login user
+For testing endpoints Postman is used Cookie-parser is used for sending accessToken to login user before runnig project download the necessary npm packages mentioned in package.json
 
 
 
